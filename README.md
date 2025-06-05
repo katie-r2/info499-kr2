@@ -1,10 +1,10 @@
 # info499-kr2
 
-##PROCESS
+## PROCESS
 
 1. Create new project with local DBMS
 
-*open database with browser to query
+	*open database with browser to query
 
 2. Installed APOC plugin for database (tab on the side) to read json files
 EDITED this line in the middle of the [project → database→ settings] *scroll to bottom and start scrolling up to find the specific line to edit – just above “JVM Parameters” section under “Miscellaneous Configuration”
@@ -24,6 +24,7 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
 7. Import data
 
 **Importing Node file WITH metadata**
+
   CALL apoc.load.json("file:///wa.microsoft.graph.nodes.OSW.geojson")
   YIELD value
   UNWIND value.features AS feature
@@ -39,6 +40,7 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
 
 
 **Importing point file WITH metadata**
+
   CALL apoc.load.json("file:///wa.microsoft.graph.points.OSW.geojson")
   YIELD value
   UNWIND value.features AS feature
@@ -53,6 +55,7 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
   SET n += clean_props
 
 **Importing edge file WITH metadata and all internal nodes**
+
   CALL apoc.load.json("file:///wa.microsoft.graph.edges.OSW.geojson")
   YIELD value
   UNWIND value.features AS feature
@@ -78,13 +81,12 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
   SET r.source = "wa.microsoft.graph.edges.OSW.geojson"
   SET r += seg.props
 
-#TESTING 
+# TESTING 
 
-##Export data in Neo4j to test with online visualization tool: https://geojson.io/
+## Export data in Neo4j to test with online visualization tool: https://geojson.io/
 
-###Exporting points and nodes
-	CALL apoc.export.json.query(
-  "CALL {
+### Exporting points and nodes
+	CALL apoc.export.json.query("CALL {
     MATCH (n:Point) 
     WHERE n.latitude IS NOT NULL AND n.longitude IS NOT NULL
     RETURN {
@@ -101,6 +103,7 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
       }
     } as feature
     
+    d
     UNION ALL
     
     MATCH (n:Point) 
@@ -144,9 +147,9 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
       }
     } as feature
 
-###Exporting Relationships *created file but had to manually delete outter wrap {}
+### Exporting Relationships *created file but had to manually delete outter wrap {}
 
-CALL apoc.export.json.query(
+ CALL apoc.export.json.query(
   "
   MATCH (a:Node)-[r:CONNECTED_TO]->(b:Node)
   WHERE a.location IS NOT NULL AND b.location IS NOT NULL
