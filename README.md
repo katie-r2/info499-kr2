@@ -35,7 +35,7 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
   SET
     n.id = feature.properties._id,
     n.location = point({longitude: coords[0], latitude: coords[1]})
-  n.source = "wa.microsoft.graph.nodes.OSW.geojson"
+  SET n.source = "wa.microsoft.graph.nodes.OSW.geojson"
   SET n += clean_props
 
 
@@ -51,7 +51,7 @@ EDITED this line in the middle of the [project → database→ settings] *scroll
   SET
     n.id = feature.properties._id,
     n.location = point({longitude: coords[0], latitude: coords[1]})
-  n.source = "wa.microsoft.graph.points.OSW.geojson"
+ SET  n.source = "wa.microsoft.graph.points.OSW.geojson"
   SET n += clean_props
 
 **Importing edge file WITH metadata and all internal nodes**
