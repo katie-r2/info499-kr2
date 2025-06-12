@@ -156,6 +156,16 @@ CALL apoc.export.json.query("CALL {
         tactile_paving: n.tactile_paving
       }
     } as feature
+  }
+  RETURN {
+    type: 'FeatureCollection',
+    features: collect(feature)
+  } AS value
+  ",
+  "file:///exported-points.geojson",
+  {stream: false, jsonFormat: "JSON"}
+)
+
 ```
 ### Exporting Relationships *created file but had to manually delete outter wrap {}
 ```cypher
