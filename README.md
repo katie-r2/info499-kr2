@@ -1,6 +1,10 @@
 # \[INFO499 - Independent Study\]  GeoJson Pedestrian Data + Neo4j (Desktop)
 
-## Set UP
+## Introduction 
+
+This independent study explored the appliction and functionality of Neo4j and graph databases with pedestrian focused data. Using data from the [Transportation Data Exchance Iniative](https://tdei.cs.washington.edu/tdei/) (TDEI) of the Microsoft Campus in Redmond, WA, this study imported and manipulated GeoJson files using cypher, Neo4j Desktop, and NeoDash. These files were divided into 6 separate files for points, nodes, linesstrings, edges, zones, and polygons. However, only the point, node, and edge files were used in this this process to focus on sidewalk relationships and attributes. 
+
+## Set Up
 
 1. Create new project and new local database
 
@@ -90,11 +94,11 @@
   SET r.source = "wa.microsoft.graph.edges.OSW.geojson"
   SET r += seg.props
 ```
-## TESTING 
+## Testing  
 
-To test, export data in Neo4j to test with online visualization tool: https://geojson.io/
+To test with an external tool, export data in Neo4j to test with online visualization tool: https://geojson.io/
 
-### Exporting points and nodes
+### Exporting points and nodes  *need to open file, manually delete outter wrap {}, and save
 ```cypher
 CALL apoc.export.json.query("CALL {
     MATCH (n:Point) 
@@ -167,7 +171,7 @@ CALL apoc.export.json.query("CALL {
 )
 
 ```
-### Exporting Relationships *created file but had to manually delete outter wrap {}
+### Exporting Relationships *need to open file, manually delete outter wrap {}, and save
 ```cypher
  CALL apoc.export.json.query(
   "
@@ -223,3 +227,37 @@ MATCH path = shortestPath((start)-[:CONNECTED_TO*..100]->(end))
 RETURN path
 ```
 
+## Using NeoDash
+
+NeoDash provides simple UI tools to query and map results directly from your database. It has the ability to display results in the form of single values, graphs, charts, and most useful to this project, a map underlay for coordinates to be accurately plotted on. The dashboard layout allows users to show the results of many different queries at one time through a flexible format.
+
+**Examples of NeoDash**
+
+1. Displaying single values (i.e. counts, sums, or sizes) -- This display is not limited to aggregation, but is a helpful usecase for hiding the actual code of the queries and just displaying results.
+
+This query finds the count of nodes that make up the shortest path between node 4131 and node 4161.
+
+```cypher
+MATCH (start:Node), (end:Node)
+WHERE id(start) =  4131 AND id(end) = 4161
+MATCH path = shortestPath((start)-[:CONNECTED_TO*..100]->(end))
+RETURN size(nodes(path)) AS nodeCount
+```
+
+2. Displaying plotted points with Map Type -- NeoDash allows you to query as you would in Neo4j Browser, but adjust the way the data is displayed. This visualization uses the 'map' type and is set to not show node labels.  
+
+This query finds the shortest path between node 4131 and node 4161.
+
+```cypher
+MATCH (start:Node), (end:Node)
+WHERE id(start) =  4131 AND id(end) = 4161
+MATCH path = shortestPath((start)-[:CONNECTED_TO*..100]->(end))
+RETURN path
+
+```
+**Screenshot of Dashboard of Node Count and Plotted Shortest Path**
+![image](https://github.com/user-attachments/assets/3785e2e7-634c-4037-9a6d-5deae22b149f)
+
+## Conclusion
+
+Harnessing the combination of Neo4j Browser and NeoDash has a lot of potential for efficent querying of pedestrian data. However, with sidewalk data, there are thousands of node and edge relationshps that make up a very small region (over 11,000 in the Microsoft Campus alone!). When trying to display the whole graph, this noticibly slowed down the software and created a bit of lag in the system, though still usable. This process shows the sucessful application of GeoJson data and Neo4j. Cypher syntax and its available procedures/functions are ideal for querying this type of data, as it allows users to plainly describe the desired result (i.e. the function for finding the shortest path between two nodes is shortestPath()). Overall, Neo4j proves to be a powerful tool for spatial data analysis, especially when combined with visualization platforms, though thoughtful query design and data management are essential for maintaining performance at scale.
