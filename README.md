@@ -261,3 +261,21 @@ RETURN path
 ## Conclusion
 
 Harnessing the combination of Neo4j Browser and NeoDash has a lot of potential for efficent querying of pedestrian data. However, with sidewalk data, there are thousands of node and edge relationshps that make up a very small region (over 11,000 in the Microsoft Campus alone!). When trying to display the whole graph, this noticibly slowed down the software and created a bit of lag in the system, though still usable. This process shows the sucessful application of GeoJson data and Neo4j. Cypher syntax and its available procedures/functions are ideal for querying this type of data, as it allows users to plainly describe the desired result (i.e. the function for finding the shortest path between two nodes is shortestPath()). Overall, Neo4j proves to be a powerful tool for spatial data analysis, especially when combined with visualization platforms, though thoughtful query design and data management are essential for maintaining performance at scale.
+
+## Project Details, Resources, and References
+
+INFO499 - Independent Study SP25
+
+Project completed by Kathryn Rochleau-Rice
+
+Advisor: Bill Howe
+
+**Resources & References**
+
+_https://lyonwj.com/blog/spatial-cypher-cheat-sheet_
+
+_https://neo4j.com/blog/developer/routing-web-app-neo4j-openstreetmap-leafletjs/_
+
+_https://neo4j.com/labs/apoc/_
+
+_Chatgpt assisted code_
