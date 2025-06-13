@@ -278,4 +278,8 @@ _https://neo4j.com/blog/developer/routing-web-app-neo4j-openstreetmap-leafletjs/
 
 _https://neo4j.com/labs/apoc/_
 
+_https://neo4j.com/docs/cypher-manual/current/patterns/shortest-paths/_
+
+_https://neo4j.com/docs/graph-data-science/2.18/algorithms/astar/_
+
 _Chatgpt assisted code_
