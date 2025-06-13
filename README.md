@@ -227,6 +227,65 @@ MATCH path = shortestPath((start)-[:CONNECTED_TO*..100]->(end))
 RETURN path
 ```
 
+### Finding Weighted Shortest Path with GDS Graph 
+
+IMORTANT! The code below is flawed and does not run. However, it is a start, that can be debugged in the future, to use a projected graph to calculate edge lengths and use them to weight edges for more accurate shortest paths.
+
+```
+// Step 1: Compute and store edge lengths using point.distance()
+CALL {
+  MATCH (a:Node)-[r:CONNECTED_TO]->(b:Node)
+  WHERE a.location IS NOT NULL AND b.location IS NOT NULL
+  SET r.length = point.distance(a.location, b.location)
+  RETURN count(*) AS _
+}
+// Step 2: Unconditionally drop and recreate graph (if it exists)
+CALL {
+  // Safe even if graph doesn't exist
+  CALL {
+    CALL gds.graph.drop('geoGraph', false) YIELD graphName RETURN graphName
+  } CATCH (e) {
+    RETURN "skipped" AS graphName
+  }
+  RETURN graphName
+}
+// Step 3: Create new GDS projection
+CALL gds.graph.project(
+  'geoGraph',
+  'Node',
+  {
+    CONNECTED_TO: {
+      properties: 'length'
+    }
+  }
+) YIELD graphName
+// Step 4: Match source and target nodes
+WITH 4131 AS startId, 4161 AS endId
+MATCH (start:Node), (end:Node)
+WHERE id(start) = startId AND id(end) = endId
+// Step 5: Run A* with weights and spatial heuristic
+CALL gds.shortestPath.astar.stream('geoGraph', {
+  sourceNode: start,
+  targetNode: end,
+  relationshipWeightProperty: 'length',
+  latitudeProperty: 'location.latitude',
+  longitudeProperty: 'location.longitude'
+})
+YIELD nodeIds, totalCost
+// Step 6: Return readable path
+UNWIND nodeIds AS nid
+MATCH (n) WHERE id(n) = nid
+RETURN n.name AS nodeName, nid, totalCost
+ORDER BY index(nodeIds, nid)
+```
+
+**Useful Documentation**
+
+_https://neo4j.com/docs/graph-data-science/current/management-ops/graph-creation/graph-project/_
+
+_https://neo4j.com/docs/graph-data-science/current/management-ops/_
+
+
 ## Using NeoDash
 
 NeoDash provides simple UI tools to query and map results directly from your database. It has the ability to display results in the form of single values, graphs, charts, and most useful to this project, a map underlay for coordinates to be accurately plotted on. The dashboard layout allows users to show the results of many different queries at one time through a flexible format.
